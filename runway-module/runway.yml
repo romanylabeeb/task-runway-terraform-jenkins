@@ -1,0 +1,6 @@
+---
+deployments:
+  - modules:
+      - path: vpc
+    regions:
+      - us-east-1
