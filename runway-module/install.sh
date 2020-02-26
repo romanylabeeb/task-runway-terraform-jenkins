@@ -1,24 +1,45 @@
 #!bash/bin
-
+sudo yum install epel-release
 sudo yum update -y
-sudo sudo yum install java-1.8.0 -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
-sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
-sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-sudo yum install jenkins -y
 
+##install python3
+sudo yum install python3 -y
+sudo yum install pip3 -y 
+sudo pip3 install runway 
 
-
-cd /usr/src
-sudo wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
-sudo tar xzf Python-3.7.4.tgz
-sudo rm Python-3.7.4.tgz
-cd Python-3.7.4
-sudo ./configure --enable-optimizations
-sudo make altinstall
-sudo echo 'alias python3.7="python3"' >> ~/.bashrc
-python3.7  -m pip install runway --user
 mkdir -p /tmp/terraform 
 curl https://releases.hashicorp.com/terraform/0.12.10/terraform_0.12.10_linux_amd64.zip -o /tmp/terraform/terraform_0.12.10_linux_amd64.zip
 unzip /tmp/terraform/terraform_0.12.10_linux_amd64.zip -d /tmp/terraform/
 cp /tmp/terraform/terraform /usr/local/bin/
+
+
+
+
+sudo sudo yum install java-1.8.0 -y
+cd ~ 
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl enable jenkins.service
+
+sudo yum install firewalld -y
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+sudo firewall-cmd --zone=public --permanent --add-port=8080/tcp
+sudo firewall-cmd --reload
+###git
+sudo yum install git -y
+
+
+
+ #!/bin/sh
+ #bash -ex /home/ec2-user/scripts/deply.sh
+ git clone https://github.com/romanylabeeb/task-runway-terraform-jenkins.git
+ cd ./task-runway-terraform-jenkins/runway-module
+
+###Add on jenkins Build job
+# export PATH=$PATH:/usr/bin/python3/bin:/usr/local/bin/:~/.local/bin/:/usr/local/bin/terraform
+#  #git clone https://github.com/romanylabeeb/task-runway-terraform-jenkins.git
+#  cd ./task-runway-terraform-jenkins/runway-module
+#  CI=y runway deploy
