@@ -5,3 +5,15 @@ region: us-east-1
 # The stacker bucket is the S3 bucket (automatically created) where templates
 # are uploaded for deployment (a CloudFormation requirement for large templates)
 stacker_bucket_name: stacker-onica-us-east-1
+
+
+---
+
+    deployments:
+      - modules:
+          - path: mycfnstacks
+            parameters:
+              namespace: stacker-dev
+              environment: dev
+              customer: onica
+              region: us-east-1
