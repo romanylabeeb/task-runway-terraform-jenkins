@@ -11,7 +11,7 @@ stacks:
 #     # enabled option here)
 #     enabled: true
   myvpcendpoint:
-    template_path: templates/vpcendpoint.yaml
+    template_path: templates/vpcendpoint.yml
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
     variables:
