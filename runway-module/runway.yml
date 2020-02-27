@@ -1,6 +1,0 @@
----
-deployments:
-  - modules:
-      - path: task1
-    regions:
-      - us-east-1
