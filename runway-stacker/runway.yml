@@ -3,6 +3,7 @@
           - path: mycfnstacks
             parameters:
               namespace: stacker-dev
+              stacker_bucket_name: romany-test-bucket
               environment: dev
               customer: onica
               region: us-east-1
