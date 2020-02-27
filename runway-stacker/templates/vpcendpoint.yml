@@ -1,8 +1,20 @@
-OurVPC:
-    Type: "AWS::EC2::VPC"
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      Tags:
-        - Key: Name
-          Value: romany-vpc
-    Metadata:
+---
+    AWSTemplateFormatVersion: "2010-09-09"
+    Description: A bucket for stacker to store CloudFormation templates
+    Parameters:
+        VPCCIDR:
+            Description: CIDR block for the VPC.
+            Type: String
+            VPCName:
+            Description: VPCName the VPC.
+            Type: String
+    
+        Resources:
+            OurVPC:
+              Type: "AWS::EC2::VPC"
+              Properties:
+                CidrBlock: !Ref VPCCIDR
+                Tags:
+                  - Key: Name
+                    Value: !Ref VPCName
+          

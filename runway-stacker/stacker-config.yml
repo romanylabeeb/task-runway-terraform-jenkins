@@ -1,9 +1,9 @@
 # Note namespace/stacker_bucket_name being substituted from the environment
 namespace: ${namespace}
 stacker_bucket: ${stacker_bucket_name}
-
+profile: master
 stacks:
-  myvpcstack:  # will be deployed as contoso-dev-myvpcstack
+#myvpcstack:  # will be deployed as contoso-dev-myvpcstack
 #     template_path: templates/vpc.yaml
 #     # The enabled option is optional and defaults to true. You can use it to
 #     # enable/disable stacks per-environment (i.e. like the namespace
@@ -15,4 +15,5 @@ stacks:
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
     variables:
-      VpcId: ${output myvpcstack::VpcId}
+      VPCCIDR: 10.0.0.0/16
+      VPCName: Romany-vpc
