@@ -1,4 +1,4 @@
-
+---
     AWSTemplateFormatVersion: "2010-09-09"
     Description: A bucket for stacker to store CloudFormation templates
     Parameters:
@@ -9,7 +9,7 @@
             Description: VPCName the VPC.
             Type: String
     
-      Resources:
+    Resources:
             OurVPC:
               Type: "AWS::EC2::VPC"
               Properties:
