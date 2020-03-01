@@ -11,8 +11,8 @@ stacks:
   #     # enabled option here)
   #     enabled: true
 
-  myvpcendpoint:
-    template_path: templates/vpcendpoint.yml
+  vpcStack:
+    template_path: templates/vpcStack.yml
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
     variables:
@@ -30,11 +30,11 @@ stacks:
       PrivateSubnet2CIDR: 10.40.2.0/24
       IGWName: InternetGateway
 
-  myec2stack:
-    template_path: templates/ec2instances.yml
+  instancesStack:
+    template_path: templates/instancesStack.yml
     variables:
-      DevVPC: ${output myvpcendpoint::DevVPC}
-      PublicSubnet1: ${output myvpcendpoint::PublicSubnet1}
-      PublicSubnet2: ${output myvpcendpoint::PublicSubnet2}
-      PrivateSubnet1: ${output myvpcendpoint::PrivateSubnet1}
-      PrivateSubnet2: ${output myvpcendpoint::PrivateSubnet2}
+      DevVPC: ${output vpcStack::DevVPC}
+      PublicSubnet1: ${output vpcStack::PublicSubnet1}
+      PublicSubnet2: ${output vpcStack::PublicSubnet2}
+      PrivateSubnet1: ${output vpcStack::PrivateSubnet1}
+      PrivateSubnet2: ${output vpcStack::PrivateSubnet2}
