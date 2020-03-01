@@ -33,7 +33,7 @@ stacks:
   myec2stack:
     template_path: templates/ec2instances.yml
     variables:
-      OurVPC: ${output myvpcendpoint::OurVPC}
+      DevVPC: ${output myvpcendpoint::DevVPC}
       PublicSubnet1: ${output myvpcendpoint::PublicSubnet1}
       PublicSubnet2: ${output myvpcendpoint::PublicSubnet2}
       PrivateSubnet1: ${output myvpcendpoint::PrivateSubnet1}

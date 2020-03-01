@@ -10,7 +10,7 @@ Parameters:
     Description: WebServer EC2 instance type
     Type: String
     Default: t2.small
-  OurVPC:
+  DevVPC:
     Type: String
   PublicSubnet1:
     Type: String
@@ -25,7 +25,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Public ELB SG
-      VpcId: !Ref OurVPC
+      VpcId: !Ref DevVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "443"
@@ -82,7 +82,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Private ELB SG
-      VpcId: !Ref OurVPC
+      VpcId: !Ref DevVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "443"
@@ -139,7 +139,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Container Instance Allowed Ports
-      VpcId: !Ref OurVPC
+      VpcId: !Ref DevVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "80"
@@ -224,7 +224,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Container Instance Allowed Ports
-      VpcId: !Ref OurVPC
+      VpcId: !Ref DevVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "80"
