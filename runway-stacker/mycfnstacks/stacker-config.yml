@@ -10,6 +10,7 @@ stacks:
 #     # substitution above, but with the value of either true or false for the
 #     # enabled option here)
 #     enabled: true
+
   myvpcendpoint:
     template_path: templates/vpcendpoint.yml
     # variables map directly to CFN parameters; here used to supply the
@@ -28,3 +29,7 @@ stacks:
       PrivateSubnetName2: MyPrivateSubnet2
       PrivateSubnet2CIDR: 10.40.2.0/24
       IGWName: InternetGateway
+  
+
+  myec2stack: 
+    template_path: templates/ec2instances.yml
