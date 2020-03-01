@@ -3,15 +3,15 @@ namespace: ${namespace}
 stacker_bucket: ${stacker_bucket_name}
 profile: master
 stacks:
-#myvpcstack:  # will be deployed as contoso-dev-myvpcstack
-#     template_path: templates/vpc.yaml
-#     # The enabled option is optional and defaults to true. You can use it to
-#     # enable/disable stacks per-environment (i.e. like the namespace
-#     # substitution above, but with the value of either true or false for the
-#     # enabled option here)
-#     enabled: true
+  #myvpcstack:  # will be deployed as contoso-dev-myvpcstack
+  #     template_path: templates/vpc.yaml
+  #     # The enabled option is optional and defaults to true. You can use it to
+  #     # enable/disable stacks per-environment (i.e. like the namespace
+  #     # substitution above, but with the value of either true or false for the
+  #     # enabled option here)
+  #     enabled: true
 
-  - myvpcendpoint:
+  myvpcendpoint:
     template_path: templates/vpcendpoint.yml
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
@@ -25,14 +25,12 @@ stacks:
       PrivateSubnet1CIDR: 10.40.1.0/24
       AvailabilityZoneSubNet2: us-east-1b
       PublicSubnetName2: MyPrublicSubnet2
-      PublicSubnet2CIDR:  10.40.20.0/24
+      PublicSubnet2CIDR: 10.40.20.0/24
       PrivateSubnetName2: MyPrivateSubnet2
       PrivateSubnet2CIDR: 10.40.2.0/24
       IGWName: InternetGateway
-    
-  
 
-  - myec2stack: 
+  myec2stack:
     template_path: templates/ec2instances.yml
     variables:
       OurVPC: ${output myvpcendpoint::OurVPC}
@@ -40,4 +38,3 @@ stacks:
       PublicSubnet2: ${output myvpcendpoint::PublicSubnet2}
       PrivateSubnet1: ${output myvpcendpoint::PrivateSubnet1}
       PrivateSubnet2: ${output myvpcendpoint::PrivateSubnet2}
-      
