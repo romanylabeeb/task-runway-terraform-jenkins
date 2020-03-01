@@ -15,7 +15,7 @@ stacks:
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
     variables:
-      VPCCIDR: 10.0.0.0/16
+      VPCCIDR: 10.40.0.0/16
       VPCName: Romany-vpc
       AvailabilityZoneSubNet1: us-east-1a
       PublicSubnetName1: MyPrublicSubnet1
