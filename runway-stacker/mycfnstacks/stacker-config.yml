@@ -17,3 +17,15 @@ stacks:
     variables:
       VPCCIDR: 10.0.0.0/16
       VPCName: Romany-vpc
+      AvailabilityZoneSubNet1: us-east-1
+      PublicSubnetName1: MyPrublicSubnet1
+      PublicSubnet1CIDR: 10.40.10.0/24
+      PrivateSubnetName1: MyPrivateSubnet1
+      PrivateSubnet1CIDR: 10.40.1.0/24
+      AvailabilityZoneSubNet2: us-east-1
+      PublicSubnetName2: MyPrublicSubnet2
+      PublicSubnet2CIDR:  10.40.20.0/24
+      PrivateSubnetName2: MyPrivateSubnet2
+      PrivateSubnet2CIDR: 10.40.2.0/24
+      IGWName: InternetGateway
+      
