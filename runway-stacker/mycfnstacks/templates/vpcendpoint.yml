@@ -374,41 +374,4 @@ Outputs:
     Value: !Ref PrivateSubnet2
    
 
-    PublicSubnet1CIDR:
-      Description: Public Subnet1CIDR
-      Value: !Ref PublicSubnet1CIDR
-     
-    PublicSubnet2CIDR:
-      Description: Public Subnet2CIDR
-      Value: !Ref PublicSubnet2CIDR
-      
-    PrivateSubnet1CIDR:
-      Description: Private Subnet1CIDR
-      Value: !Ref PrivateSubnet1CIDR
-      
-    PrivateSubnet2CIDR:
-      Description: Private Subnet2CIDR
-      Value: !Ref PrivateSubnet2CIDR
-     
 
-  PublicNetworkAcl:
-    Description: Public Network Acl
-    Value: !Ref PublicNetworkAcl
-    
-  PrivateNetworkAcl:
-    Description: Private Network Acl
-    Value: !Ref PrivateNetworkAcl
-    Export:
-      Name: !Sub "${AWS::StackName}-PrivateNetworkAcl"
-  AvailabilityZoneSubNet1:
-    Description: Availability Zone 1
-    Value: !Ref AvailabilityZoneSubNet1
-    
-  AvailabilityZoneSubNet2:
-    Description: Availability Zone2
-    Value: !Ref AvailabilityZoneSubNet2
-    
-  IGW:
-    Description: Internet Gateway
-    Value: !Ref IGW
-    
