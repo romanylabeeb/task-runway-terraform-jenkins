@@ -5,7 +5,7 @@ Parameters:
   KeyName:
     Description: The EC2 Image for the instance
     Type: String
-    Default: roman-jenkins-key.pem
+    Default: roman-jenkins-key
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
