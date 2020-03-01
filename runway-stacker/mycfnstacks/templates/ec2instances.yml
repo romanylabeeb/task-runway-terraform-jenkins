@@ -5,18 +5,27 @@ Parameters:
   KeyName:
     Description: The EC2 Image for the instance
     Type: String
-    Default:
+    Default: roman-jenkins-key.pem
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
     Default: t2.small
-
+  OurVPC:
+    Type: String
+  PublicSubnet1:
+    Type: String
+  PublicSubnet2:
+    Type: String
+  PrivateSubnet1:
+    Type: String
+  PrivateSubnet2:
+    Type: String
 Resources:
   PublicElbSG:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Public ELB SG
-      VpcId: ${output myvpcendpoint::OurVPC}
+      VpcId: !Ref OurVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "443"
@@ -40,8 +49,8 @@ Resources:
       SecurityGroups:
         - Ref: PublicElbSG
       Subnets:
-        - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet1}
-        - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet2}
+        - "Fn::ImportValue": !Ref PublicSubnet1
+        - "Fn::ImportValue": !Ref PublicSubnet2
       Scheme: internal
       Instances:
         - Ref: PublicInstance1
@@ -73,7 +82,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Private ELB SG
-      VpcId: ${output myvpcendpoint::OurVPC}
+      VpcId: !Ref OurVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "443"
@@ -97,8 +106,8 @@ Resources:
       SecurityGroups:
         - Ref: PrivateElbSG
       Subnets:
-        - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
-        - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet2}
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
       Scheme: internal
       Instances:
         - Ref: PrivateInstance1
@@ -130,7 +139,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Container Instance Allowed Ports
-      VpcId: ${output myvpcendpoint::OurVPC}
+      VpcId: !Ref OurVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "80"
@@ -155,7 +164,7 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref PublicInstanceSecurityGroup
-      SubnetId: ${output myvpcendpoint::PublicSubnet1}
+      SubnetId: !Ref PublicSubnet1
       KeyName: !Ref KeyName
       ImageId: ami-0d8f6eb4f641ef691
       UserData: !Base64
@@ -186,7 +195,7 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref PublicInstanceSecurityGroup
-      SubnetId: ${output myvpcendpoint::PublicSubnet2}
+      SubnetId: !Ref PublicSubnet2
       KeyName: !Ref KeyName
       ImageId: ami-0d8f6eb4f641ef691
       UserData: !Base64
@@ -215,8 +224,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Container Instance Allowed Ports
-      VpcId:
-        "Fn::ImportValue": ${output myvpcendpoint::OurVPC}
+      VpcId: !Ref OurVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: "80"
@@ -241,8 +249,7 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref PrivateInstanceSecurityGroup
-      SubnetId:
-        "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
+      SubnetId: !Ref PrivateSubnet1
       KeyName: !Ref KeyName
       ImageId: ami-0d8f6eb4f641ef691
       UserData: !Base64
@@ -273,7 +280,7 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref PrivateInstanceSecurityGroup
-      SubnetId: ${output myvpcendpoint::PrivateSubnet2}
+      SubnetId: !Ref PrivateSubnet2
       KeyName: !Ref KeyName
       ImageId: ami-0d8f6eb4f641ef691
       UserData: !Base64
