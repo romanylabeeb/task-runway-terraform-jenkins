@@ -8,6 +8,40 @@ Parameters:
   VPCName:
     Description: VPCName the VPC.
     Type: String
+  AvailabilityZoneSubNet1: 
+    Description: VPCName the VPC.
+    Type: String
+  PublicSubnetName1: 
+    Description: VPCName the VPC.
+    Type: String
+  PublicSubnet1CIDR: 
+    Description: VPCName the VPC.
+    Type: String
+
+  PrivateSubnetName1: 
+    Description: VPCName the VPC.
+    Type: String
+  PrivateSubnet1CIDR: 
+    Description: VPCName the VPC.
+    Type: String
+  AvailabilityZoneSubNet2: 
+    Description: VPCName the VPC.
+    Type: String
+  PublicSubnetName2: 
+    Description: VPCName the VPC.
+    Type: String
+  PublicSubnet2CIDR:  
+    Description: VPCName the VPC.
+    Type: String
+  PrivateSubnetName2: 
+    Description: VPCName the VPC.
+    Type: String
+  PrivateSubnet2CIDR: 
+    Description: VPCName the VPC.
+    Type: String
+  IGWName: 
+    Description: VPCName the VPC.
+    Type: String
 
 Resources:
   OurVPC:
