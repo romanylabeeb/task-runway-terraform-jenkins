@@ -33,13 +33,9 @@ sudo yum install git -y
 
 
 
- #!/bin/sh
- #bash -ex /home/ec2-user/scripts/deply.sh
- git clone https://github.com/romanylabeeb/task-runway-terraform-jenkins.git
- cd ./task-runway-terraform-jenkins/runway-module
 
 ###Add on jenkins Build job
-# export PATH=$PATH:/usr/bin/python3/bin:/usr/local/bin/:~/.local/bin/:/usr/local/bin/terraform
-#  #git clone https://github.com/romanylabeeb/task-runway-terraform-jenkins.git
-#  cd ./task-runway-terraform-jenkins/runway-module
-#  CI=y runway deploy
+# export PATH=$PATH:/usr/bin/python3/bin:/usr/local/bin/:~/.local/bin/:/usr/local/bin/terraform:/usr/local/bin/stacker
+# export DEPLOY_ENVIRONMENT=dev
+# cd runway-stacker
+# CI=y runway deploy
