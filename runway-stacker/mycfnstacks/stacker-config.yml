@@ -11,11 +11,11 @@ stacks:
 #     # enabled option here)
 #     enabled: true
 
-  myvpcendpoint:
+  - myvpcendpoint:
     template_path: templates/vpcendpoint.yml
     # variables map directly to CFN parameters; here used to supply the
     # VpcId output from the myvpcstack to the VpcId parameter of this stack
-    parameters:
+    variables:
       VPCCIDR: 10.40.0.0/16
       VPCName: Romany-vpc
       AvailabilityZoneSubNet1: us-east-1a
@@ -32,7 +32,7 @@ stacks:
     
   
 
-  myec2stack: 
+  - myec2stack: 
     template_path: templates/ec2instances.yml
     variables:
       OurVPC: ${output myvpcendpoint::OurVPC}
