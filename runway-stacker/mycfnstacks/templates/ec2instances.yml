@@ -1,298 +1,299 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A bucket for stacker to store CloudFormation templates
 Parameters:
-    KeyName:
-      Description: The EC2 Image for the instance
-      Type: String
-      Default: 
-    InstanceType:
-      Description: WebServer EC2 instance type
-      Type: String
-      Default: t2.small
- 
-  Resources:
-    PublicElbSG:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupDescription: Public ELB SG
-        VpcId: ${output myvpcendpoint::OurVPC}
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: "443"
-            ToPort: "443"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "80"
-            ToPort: "80"
-            CidrIp: 0.0.0.0/0
-        Tags:
-          - Key: Name
-            Value: Public-elbsg
-   
-    PublicElasticLoadBalancer:
-      Type: "AWS::ElasticLoadBalancing::LoadBalancer"
-      DependsOn:
-        - PublicInstance1
-        - PublicInstance2
-      Properties:
-        LoadBalancerName: PublicElb01
-        SecurityGroups:
-          - Ref: PublicElbSG
-        Subnets:
-          - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet1}
-          - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet2}
-        Scheme: internal
-        Instances:
-          - Ref: PublicInstance1
-          - Ref: PublicInstance2
-        Listeners:
-          - LoadBalancerPort: "80"
-            InstancePort: "80"
-            InstanceProtocol: HTTP
-            Protocol: HTTP
-        AccessLoggingPolicy:
-          EmitInterval: "60"
-          Enabled: "False"
-          S3BucketName: elb-logs
-          S3BucketPrefix: ELB
-        HealthCheck:
-          Target: "TCP:80"
-          HealthyThreshold: "5"
-          UnhealthyThreshold: "10"
-          Interval: "30"
-          Timeout: "5"
-        ConnectionDrainingPolicy:
-          Enabled: true
-          Timeout: "60"
-        Tags:
-          - Key: Name
-            Value: PublicELB_Name
- 
-    PrivateElbSG:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupDescription: Private ELB SG
-        VpcId: ${output myvpcendpoint::OurVPC}
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: "443"
-            ToPort: "443"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "80"
-            ToPort: "80"
-            CidrIp: 0.0.0.0/0
-        Tags:
-          - Key: Name
-            Value: Private-elbsg
- 
-    PrivateElasticLoadBalancer:
-      Type: "AWS::ElasticLoadBalancing::LoadBalancer"
-      DependsOn:
-        - PrivateInstance1
-        - PrivateInstance2
-      Properties:
-        LoadBalancerName: PrivateElb01
-        SecurityGroups:
-          - Ref: PrivateElbSG
-        Subnets:
-          - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
-          - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet2}
-        Scheme: internal
-        Instances:
-          - Ref: PrivateInstance1
-          - Ref: PrivateInstance2
-        Listeners:
-          - LoadBalancerPort: "80"
-            InstancePort: "80"
-            InstanceProtocol: HTTP
-            Protocol: HTTP
-        AccessLoggingPolicy:
-          EmitInterval: "60"
-          Enabled: "False"
-          S3BucketName: elb-logs
-          S3BucketPrefix: ELB
-        HealthCheck:
-          Target: "TCP:80"
-          HealthyThreshold: "5"
-          UnhealthyThreshold: "10"
-          Interval: "30"
-          Timeout: "5"
-        ConnectionDrainingPolicy:
-          Enabled: true
-          Timeout: "60"
-        Tags:
-          - Key: Name
-            Value: ELB_Name
-    
-    PublicInstanceSecurityGroup:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupDescription: Container Instance Allowed Ports
-        VpcId: ${output myvpcendpoint::OurVPC}
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: "80"
-            ToPort: "80"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "443"
-            ToPort: "443"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: icmp
-            FromPort: "8"
-            ToPort: "-1"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "22"
-            ToPort: "22"
-            CidrIp: 0.0.0.0/0
-  
-    PublicInstance1:
-      Type: "AWS::EC2::Instance"
-      Properties:
-        InstanceType: !Ref InstanceType
-        SecurityGroupIds:
-          - !Ref PublicInstanceSecurityGroup
-        SubnetId: ${output myvpcendpoint::PublicSubnet1}
-        KeyName: !Ref KeyName
-        ImageId: ami-0d8f6eb4f641ef691
-        UserData: !Base64
-          "Fn::Join":
-            - ""
-            - - |
-                #!/bin/bash
-              - |
-                yum update -y
-              - |
-                yum install -y httpd
-              - |
-                yum install -y tomcat
-              - |
-                service httpd start
-              - |
-                chkconfig httpd on
-              - >
-                echo '<html><h1>Hello World 1</h1></html>' >
-                /var/www/html/index.html
-        Tags:
-          - Key: Name
-            Value: Public-EC2-1
+  KeyName:
+    Description: The EC2 Image for the instance
+    Type: String
+    Default:
+  InstanceType:
+    Description: WebServer EC2 instance type
+    Type: String
+    Default: t2.small
 
-    PublicInstance2:
-      Type: "AWS::EC2::Instance"
-      Properties:
-        InstanceType: !Ref InstanceType
-        SecurityGroupIds:
-          - !Ref PublicInstanceSecurityGroup
-        SubnetId: ${output myvpcendpoint::PublicSubnet2}
-        KeyName: !Ref KeyName
-        ImageId: ami-0d8f6eb4f641ef691
-        UserData: !Base64
-          "Fn::Join":
-            - ""
-            - - |
-                #!/bin/bash
-              - |
-                yum update -y
-              - |
-                yum install -y httpd
-              - |
-                yum install -y tomcat
-              - |
-                service httpd start
-              - |
-                chkconfig httpd on
-              - >
-                echo '<html><h1>Hello Onica Cloud 2 </h1></html>' >
-                /var/www/html/index.html
-        Tags:
-          - Key: Name
-            Value: Public-EC2-2
-  
-    PrivateInstanceSecurityGroup:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupDescription: Container Instance Allowed Ports
-        VpcId:
-          "Fn::ImportValue": ${output myvpcendpoint::OurVPC}
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: "80"
-            ToPort: "80"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "443"
-            ToPort: "443"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: icmp
-            FromPort: "8"
-            ToPort: "-1"
-            CidrIp: 0.0.0.0/0
-          - IpProtocol: tcp
-            FromPort: "22"
-            ToPort: "22"
-            CidrIp: 0.0.0.0/0
-  
-    PrivateInstance1:
-      Type: "AWS::EC2::Instance"
-      Properties:
-        InstanceType: !Ref InstanceType
-        SecurityGroupIds:
-          - !Ref PrivateInstanceSecurityGroup
-        SubnetId:
-          "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
-        KeyName: !Ref KeyName
-        ImageId: ami-0d8f6eb4f641ef691
-        UserData: !Base64
-          "Fn::Join":
-            - ""
-            - - |
-                #!/bin/bash
-              - |
-                yum update -y
-              - |
-                yum install -y httpd
-              - |
-                yum install -y tomcat
-              - |
-                service httpd start
-              - |
-                chkconfig httpd on
-              - >
-                echo '<html><h1>Hello Onica Cloud Private EC2 number 1
-                </h1></html>' > /var/www/html/index.html
-        Tags:
-          - Key: Name
-            Value: Private-EC2-1
+Resources:
+  PublicElbSG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Public ELB SG
+      VpcId: ${output myvpcendpoint::OurVPC}
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Public-elbsg
 
-    PrivateInstance2:
-      Type: "AWS::EC2::Instance"
-      Properties:
-        InstanceType: !Ref InstanceType
-        SecurityGroupIds:
-          - !Ref PrivateInstanceSecurityGroup
-        SubnetId: ${output myvpcendpoint::PrivateSubnet2}
-        KeyName: !Ref KeyName
-        ImageId: ami-0d8f6eb4f641ef691
-        UserData: !Base64
-          "Fn::Join":
-            - ""
-            - - |
-                #!/bin/bash
-              - |
-                yum update -y
-              - |
-                yum install -y httpd
-              - |
-                yum install -y tomcat
-              - |
-                service httpd start
-              - |
-                chkconfig httpd on
-              - >
-                echo '<html><h1>Hello Onica Cloud Private EC2 number 2
-                </h1></html>' > /var/www/html/index.html
-        Tags:
-          - Key: Name
-            Value: Private-EC2-2
+  PublicElasticLoadBalancer:
+    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+    DependsOn:
+      - PublicInstance1
+      - PublicInstance2
+    Properties:
+      LoadBalancerName: PublicElb01
+      SecurityGroups:
+        - Ref: PublicElbSG
+      Subnets:
+        - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet1}
+        - "Fn::ImportValue": ${output myvpcendpoint::PublicSubnet2}
+      Scheme: internal
+      Instances:
+        - Ref: PublicInstance1
+        - Ref: PublicInstance2
+      Listeners:
+        - LoadBalancerPort: "80"
+          InstancePort: "80"
+          InstanceProtocol: HTTP
+          Protocol: HTTP
+      AccessLoggingPolicy:
+        EmitInterval: "60"
+        Enabled: "False"
+        S3BucketName: elb-logs
+        S3BucketPrefix: ELB
+      HealthCheck:
+        Target: "TCP:80"
+        HealthyThreshold: "5"
+        UnhealthyThreshold: "10"
+        Interval: "30"
+        Timeout: "5"
+      ConnectionDrainingPolicy:
+        Enabled: true
+        Timeout: "60"
+      Tags:
+        - Key: Name
+          Value: PublicELB_Name
 
-      
+  PrivateElbSG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Private ELB SG
+      VpcId: ${output myvpcendpoint::OurVPC}
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Private-elbsg
+
+  PrivateElasticLoadBalancer:
+    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+    DependsOn:
+      - PrivateInstance1
+      - PrivateInstance2
+    Properties:
+      LoadBalancerName: PrivateElb01
+      SecurityGroups:
+        - Ref: PrivateElbSG
+      Subnets:
+        - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
+        - "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet2}
+      Scheme: internal
+      Instances:
+        - Ref: PrivateInstance1
+        - Ref: PrivateInstance2
+      Listeners:
+        - LoadBalancerPort: "80"
+          InstancePort: "80"
+          InstanceProtocol: HTTP
+          Protocol: HTTP
+      AccessLoggingPolicy:
+        EmitInterval: "60"
+        Enabled: "False"
+        S3BucketName: elb-logs
+        S3BucketPrefix: ELB
+      HealthCheck:
+        Target: "TCP:80"
+        HealthyThreshold: "5"
+        UnhealthyThreshold: "10"
+        Interval: "30"
+        Timeout: "5"
+      ConnectionDrainingPolicy:
+        Enabled: true
+        Timeout: "60"
+      Tags:
+        - Key: Name
+          Value: ELB_Name
+
+  PublicInstanceSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Container Instance Allowed Ports
+      VpcId: ${output myvpcendpoint::OurVPC}
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: "8"
+          ToPort: "-1"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 0.0.0.0/0
+
+  PublicInstance1:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PublicInstanceSecurityGroup
+      SubnetId: ${output myvpcendpoint::PublicSubnet1}
+      KeyName: !Ref KeyName
+      ImageId: ami-0d8f6eb4f641ef691
+      UserData: !Base64
+        "Fn::Join":
+          - ""
+          - - |
+              #!/bin/bash
+            - |
+              yum update -y
+            - |
+              yum install -y httpd
+            - |
+              yum install -y tomcat
+            - |
+              service httpd start
+            - |
+              chkconfig httpd on
+            - >
+              echo '<html><h1>Hello World 1</h1></html>' >
+              /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: Public-EC2-1
+
+  PublicInstance2:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PublicInstanceSecurityGroup
+      SubnetId: ${output myvpcendpoint::PublicSubnet2}
+      KeyName: !Ref KeyName
+      ImageId: ami-0d8f6eb4f641ef691
+      UserData: !Base64
+        "Fn::Join":
+          - ""
+          - - |
+              #!/bin/bash
+            - |
+              yum update -y
+            - |
+              yum install -y httpd
+            - |
+              yum install -y tomcat
+            - |
+              service httpd start
+            - |
+              chkconfig httpd on
+            - >
+              echo '<html><h1>Hello Onica Cloud 2 </h1></html>' >
+              /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: Public-EC2-2
+
+  PrivateInstanceSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Container Instance Allowed Ports
+      VpcId:
+        "Fn::ImportValue": ${output myvpcendpoint::OurVPC}
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: "8"
+          ToPort: "-1"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 0.0.0.0/0
+
+  PrivateInstance1:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PrivateInstanceSecurityGroup
+      SubnetId:
+        "Fn::ImportValue": ${output myvpcendpoint::PrivateSubnet1}
+      KeyName: !Ref KeyName
+      ImageId: ami-0d8f6eb4f641ef691
+      UserData: !Base64
+        "Fn::Join":
+          - ""
+          - - |
+              #!/bin/bash
+            - |
+              yum update -y
+            - |
+              yum install -y httpd
+            - |
+              yum install -y tomcat
+            - |
+              service httpd start
+            - |
+              chkconfig httpd on
+            - >
+              echo '<html><h1>Hello Onica Cloud Private EC2 number 1
+              </h1></html>' > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: Private-EC2-1
+
+  PrivateInstance2:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PrivateInstanceSecurityGroup
+      SubnetId: ${output myvpcendpoint::PrivateSubnet2}
+      KeyName: !Ref KeyName
+      ImageId: ami-0d8f6eb4f641ef691
+      UserData: !Base64
+        "Fn::Join":
+          - ""
+          - - |
+              #!/bin/bash
+            - |
+              yum update -y
+            - |
+              yum install -y httpd
+            - |
+              yum install -y tomcat
+            - |
+              service httpd start
+            - |
+              chkconfig httpd on
+            - >
+              echo '<html><h1>Hello Onica Cloud Private EC2 number 2
+              </h1></html>' > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: Private-EC2-2
