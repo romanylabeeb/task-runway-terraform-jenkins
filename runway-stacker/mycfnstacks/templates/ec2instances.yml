@@ -166,7 +166,7 @@ Resources:
         - !Ref PublicInstanceSecurityGroup
       SubnetId: !Ref PublicSubnet1
       KeyName: !Ref KeyName
-      ImageId: ami-0d8f6eb4f641ef691
+      ImageId: ami-002cc39e7bf021a77
       UserData: !Base64
         "Fn::Join":
           - ""
@@ -197,7 +197,7 @@ Resources:
         - !Ref PublicInstanceSecurityGroup
       SubnetId: !Ref PublicSubnet2
       KeyName: !Ref KeyName
-      ImageId: ami-0d8f6eb4f641ef691
+      ImageId: ami-002cc39e7bf021a77
       UserData: !Base64
         "Fn::Join":
           - ""
@@ -251,7 +251,7 @@ Resources:
         - !Ref PrivateInstanceSecurityGroup
       SubnetId: !Ref PrivateSubnet1
       KeyName: !Ref KeyName
-      ImageId: ami-0d8f6eb4f641ef691
+      ImageId: ami-002cc39e7bf021a77
       UserData: !Base64
         "Fn::Join":
           - ""
@@ -282,7 +282,7 @@ Resources:
         - !Ref PrivateInstanceSecurityGroup
       SubnetId: !Ref PrivateSubnet2
       KeyName: !Ref KeyName
-      ImageId: ami-0d8f6eb4f641ef691
+      ImageId: ami-002cc39e7bf021a77
       UserData: !Base64
         "Fn::Join":
           - ""
